@@ -41,11 +41,11 @@
       ], { title: 'Reports' }));
 
       setHTML(page, html`
-        ${ui.pageHead({ title: 'Reports', sub: null })}
+        ${ui.pageHead({ title: 'Reports' })}
         <div class="toolbar">
           <div class="search grow">
             ${SU.icon('search')}
-            <input class="input" type="search" placeholder="Search by subject, reference or keyword" aria-label="Search reports" value="${f.q}" data-search autocomplete="off">
+            <input class="input" type="search" placeholder="Search reports" aria-label="Search reports" value="${f.q}" data-search autocomplete="off">
             <span class="search__kbd" aria-hidden="true">/</span>
           </div>
           <button class="btn btn--secondary toolbar__filter" type="button" data-filter>${SU.icon('filter')}<span>Filters</span><span class="count-badge" data-filter-count hidden></span></button>
@@ -121,7 +121,9 @@
           if (clear) clear.addEventListener('click', () => { Object.assign(f, { ...DEFAULTS, status: f.status }); syncControls(); refresh(); });
           return;
         }
-        setHTML(listEl, html`<div class="list report-list ${first ? 'enter-fade' : ''}">${rows.map(SU.ui.reportCell)}</div>`);
+        setHTML(listEl, html`<div class="list report-list ${first ? 'enter-fade' : ''}">
+          <div class="report-table-head" aria-hidden="true"><span>Report</span><span>Status</span><span>Priority</span><span>Assignee</span><span>Updated</span></div>
+          ${rows.map((r) => SU.ui.reportCell(r, { table: true }))}</div>`);
         first = false;
       }
 
@@ -189,6 +191,7 @@
 
       syncControls();
       refresh(true).then(() => ctx.onMounted());
+      ctx.setRefresh(() => refresh(true));
       const unsub = store.subscribe((src) => { if (src === 'remote') refresh(); });
       return unsub;
     },

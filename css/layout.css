@@ -67,7 +67,6 @@
   max-width: var(--content-max);
   margin: 0 auto;
   padding: var(--sp-2) calc(var(--gutter) + var(--safe-right)) var(--sp-8) calc(var(--gutter) + var(--safe-left));
-  will-change: transform, opacity;
 }
 .page--narrow { max-width: calc(var(--reading-max) + var(--gutter) * 2); }
 .page--wide { max-width: 1280px; }
@@ -77,11 +76,11 @@
   align-items: flex-end;
   justify-content: space-between;
   gap: var(--sp-4);
-  margin: var(--sp-2) 0 var(--sp-6);
+  margin: var(--sp-1) 0 var(--sp-4);
 }
 .page-head__text { min-width: 0; }
 .page-head .large-title { margin-top: 2px; }
-.page-head__sub { margin-top: var(--sp-2); color: var(--text-2); font-size: var(--fs-base); max-width: 60ch; }
+.page-head__sub { margin-top: 4px; color: var(--text-2); font-size: var(--fs-sm); max-width: 60ch; }
 .page-head__actions { display: flex; gap: var(--sp-2); flex-shrink: 0; }
 
 .large-title {
@@ -91,7 +90,7 @@
   font-weight: 700;
 }
 
-.section { margin-top: var(--sp-7); }
+.section { margin-top: var(--sp-6); }
 .section:first-child { margin-top: 0; }
 .section__head {
   display: flex;
@@ -101,7 +100,7 @@
   margin-bottom: var(--sp-3);
   padding: 0 2px;
 }
-.section__title { font-size: var(--fs-lg); font-weight: 600; letter-spacing: var(--tracking-snug); }
+.section__title { font-size: var(--fs-md); font-weight: 600; letter-spacing: var(--tracking-snug); }
 
 /* Page transitions */
 @keyframes page-in-forward { from { opacity: 0; transform: translate3d(28px, 0, 0); } to { opacity: 1; transform: none; } }
@@ -129,6 +128,7 @@
 
 .tab {
   position: relative;
+  isolation: isolate;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -145,9 +145,20 @@
   user-select: none;
   -webkit-user-select: none;
 }
-.tab svg { width: 24px; height: 24px; transition: transform var(--dur-2) var(--ease-spring); }
+.tab svg { width: 22px; height: 22px; transition: transform var(--dur-2) var(--ease-spring); }
 .tab:active svg { transform: scale(0.88); }
-.tab[aria-current="page"] { color: var(--text); }
+.tab[aria-current="page"] { color: var(--primary-soft-text); }
+.tab[aria-current="page"]::before {
+  content: "";
+  position: absolute;
+  top: 5px;
+  width: 52px; height: 30px;
+  border-radius: var(--r-pill);
+  background: var(--primary-soft);
+  z-index: -1;
+  animation: tab-pill var(--dur-3) var(--ease-spring) both;
+}
+@keyframes tab-pill { from { transform: scaleX(0.4); opacity: 0; } }
 .tab[aria-current="page"] svg { stroke-width: 2.1; }
 .tab__pip {
   position: absolute;
@@ -180,7 +191,8 @@
   .topbar .brand { display: none; }
 
   .page { padding-top: var(--sp-4); }
-  .large-title { font-size: 30px; }
+  .large-title { font-size: 26px; }
+  .page { padding-top: var(--sp-3); }
 
   .sidebar {
     position: fixed;
@@ -205,7 +217,7 @@
   gap: var(--sp-2);
   height: 44px;
   padding: 0 4px 0 10px;
-  margin-bottom: var(--sp-4);
+  margin-bottom: var(--sp-3);
 }
 
 .brand {
@@ -242,7 +254,7 @@
 
 .brand__name { white-space: nowrap; transition: opacity var(--dur-2) var(--ease-out); }
 
-.sidebar__context { padding: 0 2px; margin-bottom: var(--sp-4); }
+.sidebar__context { padding: 0 2px; margin-bottom: var(--sp-3); }
 .sidebar__context .t-overline { padding: 0 10px; }
 
 .sidebar__nav {
@@ -263,18 +275,18 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  height: 40px;
-  padding: 0 12px;
-  border-radius: var(--r-sm);
+  height: 36px;
+  padding: 0 11px;
+  border-radius: 9px;
   color: var(--text-2);
-  font-size: 14px;
+  font-size: 13.5px;
   font-weight: 500;
   white-space: nowrap;
   text-align: left;
   width: 100%;
   transition: background-color var(--dur-1) var(--ease-out), color var(--dur-1) var(--ease-out);
 }
-.nav-item svg { width: 20px; height: 20px; }
+.nav-item svg { width: 18px; height: 18px; }
 .nav-item:hover { background: var(--surface-2); color: var(--text); }
 .nav-item:active { background: var(--surface-3); }
 .nav-item[aria-current="page"] {
@@ -316,7 +328,7 @@
 .sidebar-collapsed .sidebar__context { height: 0; margin: 0; overflow: hidden; }
 .sidebar-collapsed .sidebar__head { flex-direction: column; height: auto; gap: var(--sp-3); padding: 4px 0; }
 .sidebar-collapsed .sidebar__head .brand { padding-left: 0; }
-.sidebar-collapsed .nav-item { justify-content: flex-start; padding: 0 14px; }
+.sidebar-collapsed .nav-item { justify-content: flex-start; padding: 0 13px; }
 .sidebar-collapsed .nav-item__badge--alert {
   opacity: 1;
   position: absolute;

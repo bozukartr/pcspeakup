@@ -19,12 +19,12 @@
     mount(page, ctx) {
       const session = store.reporterSession();
       setHTML(page, html`
-        ${ui.pageHead({ title: 'Track My Report', sub: 'Enter the tracking reference and access code you received when you submitted your report.' })}
+        ${ui.pageHead({ title: 'Track My Report', sub: 'Use the details you got when submitting.' })}
 
         ${session ? html`
           <a class="card card--pad pressable resume-card" href="#/track/${session.reference}">
             <span class="tile-icon tile-icon--green">${SU.icon('lock')}</span>
-            <span class="grow"><span class="t-headline" style="display:block">Continue to ${session.reference}</span><span class="t-callout text-2">Your report is unlocked in this tab.</span></span>
+            <span class="grow"><span class="t-headline" style="display:block">Continue to ${session.reference}</span><span class="t-caption">Unlocked in this tab</span></span>
             <span class="cell__chev">${SU.icon('chevronRight')}</span>
           </a>` : ''}
 
@@ -42,26 +42,20 @@
             </div>
             ${ui.fieldError('code')}
           </div>
-          <button class="btn btn--primary btn--lg btn--block" type="submit" style="margin-top:24px" data-submit>${SU.icon('lock')}Open My Report</button>
+          <button class="btn btn--primary btn--lg btn--block" type="submit" style="margin-top:18px" data-submit>Open Report</button>
         </form>
 
-        <div class="callout callout--info" style="margin-top:16px">
-          ${SU.icon('sparkle')}
-          <div style="flex:1">
-            <strong>Trying the demo?</strong> Use the sample report <span class="t-mono">${SU.seed.DEMO.reference}</span> with code <span class="t-mono">${SU.seed.DEMO.accessCode}</span>.
-            <div style="margin-top:8px"><button class="link-btn" type="button" data-demo>Fill in demo credentials</button></div>
-          </div>
-        </div>
+        <button class="demo-fill" type="button" data-demo>${SU.icon('sparkle')}Try the demo report</button>
 
-        <div class="list" style="margin-top:28px">
+        <div class="list" style="margin-top:20px">
           <a class="cell cell--icon" href="#/submit">
             <span class="tile-icon">${SU.icon('compose')}</span>
-            <span class="cell__body"><span class="cell__title">Don’t have a report yet?</span><span class="cell__sub" style="display:block">Submit one in a few minutes</span></span>
+            <span class="cell__body"><span class="cell__title">Submit a new report</span></span>
             <span class="cell__chev">${SU.icon('chevronRight')}</span>
           </a>
           <button class="cell cell--icon" type="button" data-lost>
             <span class="tile-icon">${SU.icon('key')}</span>
-            <span class="cell__body"><span class="cell__title">Lost your access code?</span><span class="cell__sub" style="display:block">What you can do</span></span>
+            <span class="cell__body"><span class="cell__title">Lost your access code?</span></span>
             <span class="cell__chev">${SU.icon('chevronRight')}</span>
           </button>
         </div>`);
@@ -96,11 +90,10 @@
         SU.overlay.sheet({
           title: 'Lost access code',
           body: html`
-            <p class="text-2">To protect your anonymity, access codes are never stored in readable form — so nobody, including the case team, can look them up or reset them.</p>
-            <ul class="bullets" style="margin-top:16px">
-              <li>Check where you saved it — a downloaded text file, a password manager or a private note.</li>
-              <li>If it’s truly lost, you can submit a new report and mention your earlier report’s reference and submission date.</li>
-              <li>If you shared your identity, the case team may also contact you directly.</li>
+            <p class="text-2 t-callout">Codes aren’t stored in readable form, so nobody can reset them.</p>
+            <ul class="bullets" style="margin-top:12px">
+              <li>Check your saved file or password manager.</li>
+              <li>Or submit a new report and mention the old reference.</li>
             </ul>`,
           footer: html`<a class="btn btn--primary" href="#/submit" data-close>Submit a new report</a>`,
         });
@@ -191,7 +184,7 @@
                 <span class="tl-dot">${done ? SU.icon('check') : ''}</span>
                 <div>
                   <div class="tl-title">${s.label}</div>
-                  ${i <= currentIdx ? html`<div class="tl-text">${s.employeeText}</div>` : ''}
+                  ${i === currentIdx ? html`<div class="tl-text">${s.employeeText}</div>` : ''}
                   ${reached[s.id] ? html`<div class="tl-time">${formatDate(reached[s.id])}</div>` : ''}
                 </div>
               </div>`;
@@ -203,8 +196,8 @@
         if (!report.messages.length) {
           return html`<div class="thread-empty">
             <span class="tile-icon tile-icon--lg">${SU.icon('message')}</span>
-            <p class="t-headline" style="margin-top:12px">No messages yet</p>
-            <p class="t-callout text-2" style="margin-top:4px;max-width:34ch">The case team may reach out here with questions. You can also add information at any time.</p>
+            <p class="t-headline" style="margin-top:10px">No messages yet</p>
+            <p class="t-caption" style="margin-top:2px">Add details or wait for the team to reply.</p>
           </div>`;
         }
         let lastDay = '';
@@ -225,22 +218,23 @@
       function render() {
         const cat = catalog.category(report.category);
         setHTML(page, html`
-          <header class="page-head" style="margin-bottom:20px">
-            <div class="page-head__text">
-              <div class="row gap-2 wrap">${ui.statusPill(report.status)}<span class="t-caption">Updated ${relativeTime(report.updatedAt)}</span></div>
-              <h1 class="large-title" data-large-title style="margin-top:10px;font-size:26px">${report.subject}</h1>
-              <div class="row gap-2 text-2 t-callout" style="margin-top:8px">${SU.icon(cat.icon, 'style="width:16px;height:16px"')}${cat.label} · Submitted ${formatDate(report.createdAt)}</div>
+          <header class="report-head">
+            <h1 class="report-head__title" data-large-title>${report.subject}</h1>
+            <div class="report-head__meta">${SU.icon(cat.icon)}${cat.label} · ${formatDate(report.createdAt)}</div>
+            <div class="status-steps" aria-label="Status: ${catalog.status(report.status).label}">
+              ${catalog.STATUSES.map((st, i) => html`<span class="status-steps__bar ${i <= catalog.statusIndex(report.status) ? 'is-on' : ''}"></span>`)}
             </div>
+            <div class="row between" style="margin-top:8px">${ui.statusPill(report.status)}<span class="t-caption">Updated ${relativeTime(report.updatedAt)}</span></div>
           </header>
 
           <div class="report-layout">
             <section class="card messages-card" aria-labelledby="msgs-title">
-              <div class="card-head" style="padding:18px 20px 0">
+              <div class="card-head" style="padding:14px 16px 0;margin-bottom:4px">
                 <div>
-                  <h2 class="card-title" id="msgs-title">Secure messages</h2>
-                  <div class="card-sub">With the ${store.TEAM_LABEL} team · ${report.anonymous ? 'You appear as Anonymous' : 'Your identity is shared'}</div>
+                  <h2 class="card-title" id="msgs-title">Messages</h2>
+                  <div class="card-sub">${store.TEAM_LABEL} · ${report.anonymous ? 'You’re anonymous' : 'Identity shared'}</div>
                 </div>
-                <span class="tile-icon tile-icon--green" title="End-to-end protected in production">${SU.icon('lock')}</span>
+<span class="pill pill--resolved">${SU.icon('lock')}Private</span>
               </div>
               <div class="messages-scroll" data-thread aria-live="polite">${thread()}</div>
               <form class="messages-compose" data-compose>
@@ -249,19 +243,18 @@
                   <textarea id="r-msg" rows="1" placeholder="Write a message…" maxlength="2000" data-input></textarea>
                   <button class="composer__send" type="submit" aria-label="Send message" disabled data-send>${SU.icon('send')}</button>
                 </div>
-                <p class="t-caption" style="margin:8px 4px 0">Avoid sharing details that could identify you unless you intend to.</p>
               </form>
             </section>
 
             <aside class="stack gap-3">
-              <section class="card card--pad" aria-labelledby="status-title">
-                <h2 class="card-title" id="status-title" style="margin-bottom:18px">Status</h2>
+              <section class="card card--pad status-card" aria-labelledby="status-title">
+                <h2 class="card-title" id="status-title" style="margin-bottom:14px">Status</h2>
                 ${timeline()}
               </section>
 
               <section class="card accordion" aria-label="Report details">
                 <details>
-                  <summary>Report details ${SU.icon('chevronDown')}</summary>
+                  <summary>Your report ${SU.icon('chevronDown')}</summary>
                   <div class="accordion__body">
                     <div class="kv">
                       <div class="kv__row"><span class="kv__key">Reference</span><span class="kv__val t-mono">${report.reference}</span></div>
@@ -277,10 +270,7 @@
                 </details>
               </section>
 
-              <div class="callout">
-                ${SU.icon('clock')}
-                <div>For your privacy, this report locks automatically after 20 minutes of inactivity.</div>
-              </div>
+              <p class="hint-line">${SU.icon('clock')}Auto-locks after 20 minutes idle</p>
             </aside>
           </div>`);
 
@@ -299,6 +289,8 @@
       function scrollThread(smooth) {
         const el = page.querySelector('[data-thread]');
         if (el) el.scrollTo({ top: el.scrollHeight, behavior: smooth ? 'smooth' : 'auto' });
+        // On phones the thread flows with the page, so bring the newest message into view.
+        if (smooth && !SU.util.isDesktop()) window.scrollTo({ top: document.documentElement.scrollHeight, behavior: 'smooth' });
       }
 
       function bindComposer() {
@@ -334,6 +326,7 @@
       }
 
       load(true);
+      ctx.setRefresh(() => load(false));
       // Reflect replies made by the case team in another tab.
       const unsub = store.subscribe((source) => { if (source === 'remote' && report) load(false); });
       return unsub;

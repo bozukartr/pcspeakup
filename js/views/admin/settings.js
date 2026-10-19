@@ -25,7 +25,7 @@
 
       const toggle = (key, title, sub) => html`
         <label class="cell">
-          <span class="cell__body"><span class="cell__title">${title}</span><span class="cell__sub" style="display:block">${sub}</span></span>
+          <span class="cell__body"><span class="cell__title">${title}</span>${sub ? html`<span class="cell__sub" style="display:block">${sub}</span>` : ''}</span>
           <span class="switch"><input type="checkbox" data-pref="${key}" ${prefs[key] ? 'checked' : ''} aria-label="${title}"><span class="switch__track"></span></span>
         </label>`;
 
@@ -59,11 +59,10 @@
         <section class="section">
           <h2 class="list__header t-overline">Notifications</h2>
           <div class="list">
-            ${toggle('newReports', 'New reports', 'Notify me when a report is submitted')}
-            ${toggle('replies', 'Reporter replies', 'Notify me when a reporter sends a message')}
-            ${toggle('digest', 'Weekly digest', 'A summary of open cases every Monday')}
+            ${toggle('newReports', 'New reports', '')}
+            ${toggle('replies', 'Reporter replies', '')}
+            ${toggle('digest', 'Weekly digest', '')}
           </div>
-          <p class="list__footer">Notifications never include report content — only a link to sign in.</p>
         </section>
 
         <section class="section">
@@ -71,7 +70,7 @@
           <div class="list">
             <button class="cell cell--icon" type="button" data-export>
               <span class="tile-icon">${SU.icon('download')}</span>
-              <span class="cell__body"><span class="cell__title">Export reports</span><span class="cell__sub" style="display:block">CSV of case metadata, without descriptions</span></span>
+              <span class="cell__body"><span class="cell__title">Export CSV</span></span>
               <span class="cell__chev">${SU.icon('chevronRight')}</span>
             </button>
             <button class="cell cell--icon" type="button" data-shortcuts>
@@ -81,26 +80,24 @@
             </button>
             <button class="cell cell--icon" type="button" data-reset>
               <span class="tile-icon tile-icon--red">${SU.icon('refresh')}</span>
-              <span class="cell__body"><span class="cell__title text-danger">Reset demo data</span><span class="cell__sub" style="display:block">Restore the original sample reports</span></span>
+              <span class="cell__body"><span class="cell__title text-danger">Reset demo data</span></span>
             </button>
           </div>
         </section>
 
         <section class="section">
-          <h2 class="list__header t-overline">Production architecture</h2>
-          <div class="card card--pad">
-            <div class="callout callout--warning" style="margin-bottom:16px">
-              ${SU.icon('alertTriangle')}
-              <div><strong>Demonstration only.</strong> This build keeps data in browser localStorage, which provides no genuine anonymity, confidentiality or security.</div>
+          <details class="card disclosure">
+            <summary>${SU.icon('server')}<span>Production architecture</span><span class="pill pill--review" style="margin-left:auto">Demo build</span></summary>
+            <div class="disclosure__body">
+              <ul class="arch-list">
+                ${arch.map(([icon, t, d]) => html`<li><span class="tile-icon tile-icon--navy">${SU.icon(icon)}</span><div><div class="t-headline" style="font-size:14px">${t}</div><p class="t-caption">${d}</p></div></li>`)}
+              </ul>
             </div>
-            <ul class="arch-list">
-              ${arch.map(([icon, t, d]) => html`<li><span class="tile-icon tile-icon--navy">${SU.icon(icon)}</span><div><div class="t-headline" style="font-size:14.5px">${t}</div><p class="t-callout text-2">${d}</p></div></li>`)}
-            </ul>
-          </div>
+          </details>
         </section>
 
         <section class="section">
-          <button class="btn btn--danger-ghost btn--lg btn--block" type="button" data-signout style="background:var(--surface);box-shadow:var(--shadow-sm),0 0 0 1px var(--border)">${SU.icon('logout')}Sign Out</button>
+          <button class="btn btn--danger-ghost btn--block" type="button" data-signout style="background:var(--surface);box-shadow:var(--shadow-sm),0 0 0 1px var(--border)">${SU.icon('logout')}Sign Out</button>
           <p class="t-caption" style="text-align:center;margin-top:16px">Clearline 1.0 · Demo build</p>
         </section>`);
 

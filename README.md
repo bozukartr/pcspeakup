@@ -41,6 +41,8 @@ python3 -m http.server 8080   # then visit http://localhost:8080
 **Design system and interactions**
 - Inter typography, an off-white, charcoal and deep-navy palette, and light and dark themes that follow the system or a manual choice
 - A bottom tab bar on mobile and a collapsible sidebar on desktop (`[`). Large titles collapse into the navigation bar as you scroll
+- Mobile gestures: swipe from the left edge to go back, pull to refresh, and tap the active tab to scroll to the top. Scroll position is restored when you return to a screen, and message threads dock the composer to the bottom like a chat app
+- Desktop: a ⌘K / Ctrl+K command palette for navigation, quick actions and report search, plus a dense table view in the reports inbox
 - Bottom sheets with drag-to-dismiss. On desktop these become centered modals
 - Context menus: popovers on desktop, action sheets on mobile. Also confirmation dialogs, toasts with undo and swipe-to-dismiss, and skeleton loaders
 - Direction-aware page transitions, haptic ticks on supported devices, and support for reduced motion

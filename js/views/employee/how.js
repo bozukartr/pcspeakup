@@ -9,10 +9,10 @@
   SU.views = SU.views || {};
 
   const STEPS = [
-    ['compose', 'Submit your report', 'Choose a category and describe what happened. You don’t need to log in or give your name.'],
-    ['key', 'Save your credentials', 'You’ll receive a tracking reference and a private access code. Keep them safe — they can’t be recovered.'],
-    ['eye', 'An authorized team reviews it', 'Ethics & Compliance acknowledges your report, typically within 2 business days, and assesses next steps.'],
-    ['message', 'Stay in the loop', 'Check status and exchange anonymous messages with the case team at any time.'],
+    ['compose', 'Submit', 'No login or name needed.'],
+    ['key', 'Save your code', 'It’s your only way back in.'],
+    ['eye', 'We review', 'Acknowledged within 2 business days.'],
+    ['message', 'Follow up', 'Track status and message anonymously.'],
   ];
 
   const FAQ = [
@@ -38,39 +38,38 @@
     pageClass: 'page--narrow',
     mount(page, { shell }) {
       setHTML(page, html`
-        ${ui.pageHead({ title: 'How It Works', sub: 'A simple, transparent process designed to protect you at every step.' })}
+        ${ui.pageHead({ title: 'How It Works' })}
 
         <section class="card card--pad">
           <ol class="steps">
             ${STEPS.map(([icon, title, text], i) => html`
               <li class="steps__item">
                 <span class="steps__icon">${SU.icon(icon)}<span class="steps__num">${i + 1}</span></span>
-                <div><h3 class="t-headline">${title}</h3><p class="t-callout text-2" style="margin-top:4px">${text}</p></div>
+                <div><h3 class="t-headline" style="font-size:15px">${title}</h3><p class="t-caption" style="margin-top:1px">${text}</p></div>
               </li>`)}
           </ol>
-          <a class="btn btn--primary btn--lg btn--block" href="#/submit" style="margin-top:24px">Submit a Report</a>
+          <a class="btn btn--primary btn--block" href="#/submit" style="margin-top:18px">Submit a Report</a>
         </section>
 
         <section class="section">
-          <div class="section__head"><h2 class="section__title">Our privacy commitments</h2></div>
+          <div class="section__head"><h2 class="section__title">Privacy</h2></div>
           <div class="privacy-grid">
             ${[
-              ['incognito', 'Anonymous by design', 'No account, no name, no email required.'],
-              ['fingerprint', 'No tracking', 'Reporter IP addresses and device fingerprints are not collected.'],
-              ['lock', 'Encrypted', 'Reports and messages are encrypted in transit and at rest.'],
-              ['users', 'Need-to-know access', 'Role-based access limits each case to its assigned reviewers.'],
+              ['incognito', 'Anonymous', 'No account or name'],
+              ['fingerprint', 'No tracking', 'No IP or device logs'],
+              ['lock', 'Encrypted', 'In transit and at rest'],
+              ['users', 'Need-to-know', 'Assigned reviewers only'],
             ].map(([icon, t, d]) => html`
               <div class="card card--pad privacy-tile">
                 <span class="tile-icon tile-icon--green">${SU.icon(icon)}</span>
-                <div class="t-headline" style="margin-top:12px;font-size:15px">${t}</div>
-                <p class="t-callout text-2" style="margin-top:4px">${d}</p>
+                <div class="t-headline" style="margin-top:10px;font-size:14px">${t}</div>
+                <p class="t-caption" style="margin-top:1px">${d}</p>
               </div>`)}
           </div>
-          <p class="t-caption" style="margin:10px 4px 0">These commitments describe the intended production system. See the demo notice below.</p>
         </section>
 
         <section class="section">
-          <div class="section__head"><h2 class="section__title">Frequently asked questions</h2></div>
+          <div class="section__head"><h2 class="section__title">FAQ</h2></div>
           <div class="card accordion">
             ${FAQ.map(([q, a]) => html`
               <details><summary>${q}${SU.icon('chevronDown')}</summary><div class="accordion__body">${a}</div></details>`)}
@@ -78,16 +77,12 @@
         </section>
 
         <section class="section">
-          <div class="card card--pad demo-card">
-            <div class="row gap-3" style="align-items:flex-start">
-              <span class="tile-icon tile-icon--amber">${SU.icon('alertTriangle')}</span>
-              <div>
-                <h2 class="t-headline">About this demonstration</h2>
-                <p class="t-callout text-2" style="margin-top:6px">This prototype stores all data in your browser’s <b>localStorage</b>. Client-side storage provides <b>no real anonymity, confidentiality or security</b> — anyone with access to this browser can read it, and nothing is sent to a server. Please do not enter real reports here.</p>
-                <p class="t-callout text-2" style="margin-top:8px">A production deployment requires a secure backend with encrypted storage, authentication, role-based access control, audit logging and protected messaging.</p>
-              </div>
+          <details class="card disclosure demo-card">
+            <summary>${SU.icon('alertTriangle')}<span>About this demo</span></summary>
+            <div class="disclosure__body t-callout text-2">
+              Data is kept in this browser’s localStorage only. That gives <b>no real anonymity, confidentiality or security</b> — don’t enter real reports. Production needs a secure backend, encryption, SSO and role-based access.
             </div>
-          </div>
+          </details>
         </section>
 
         <section class="section">
@@ -105,7 +100,7 @@
             </button>
             <a class="cell cell--icon" href="#/admin">
               <span class="tile-icon tile-icon--navy">${SU.icon('lock')}</span>
-              <span class="cell__body"><span class="cell__title">Case management</span><span class="cell__sub" style="display:block">For authorized Ethics & Compliance staff</span></span>
+              <span class="cell__body"><span class="cell__title">Case management</span><span class="cell__sub" style="display:block">Staff only</span></span>
               <span class="cell__chev">${SU.icon('chevronRight')}</span>
             </a>
           </div>
