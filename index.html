@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en" data-theme-pref="system">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Clearline · Speak Up Safely</title>
+  <meta name="description" content="Clearline is a confidential channel for raising concerns, reporting misconduct and sharing feedback — anonymously if you prefer.">
+  <meta name="theme-color" content="#F6F6F4" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0D0F13" media="(prefers-color-scheme: dark)">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Clearline">
+  <meta name="referrer" content="no-referrer">
+  <link rel="icon" href="assets/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="assets/icon.svg">
+  <link rel="manifest" href="manifest.webmanifest">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+
+  <!-- Apply the saved theme before first paint to avoid a flash. -->
+  <script>
+    (function () {
+      try {
+        var pref = localStorage.getItem('clearline.theme') || 'system';
+        var dark = pref === 'dark' || (pref === 'system' && matchMedia('(prefers-color-scheme: dark)').matches);
+        document.documentElement.dataset.theme = dark ? 'dark' : 'light';
+        document.documentElement.dataset.themePref = pref;
+        if (localStorage.getItem('clearline.sidebar') === 'collapsed') document.documentElement.classList.add('sidebar-collapsed');
+      } catch (e) { document.documentElement.dataset.theme = 'light'; }
+    })();
+  </script>
+
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/views.css">
+</head>
+<body>
+  <a class="skip-link" href="#view">Skip to content</a>
+
+  <div class="app" id="app">
+    <!-- Desktop sidebar -->
+    <aside class="sidebar" id="sidebar" aria-label="Primary">
+      <div class="sidebar__head">
+        <a class="brand" href="#/" aria-label="Clearline home">
+          <span class="brand__mark" aria-hidden="true"></span>
+          <span class="brand__name">Clearline</span>
+        </a>
+        <button class="icon-btn sidebar__collapse" id="sidebarToggle" type="button" aria-label="Collapse sidebar" aria-pressed="false"></button>
+      </div>
+      <div class="sidebar__context" id="sidebarContext"></div>
+      <nav class="sidebar__nav" id="sidebarNav"></nav>
+      <div class="sidebar__foot" id="sidebarFoot"></div>
+    </aside>
+
+    <div class="main">
+      <header class="topbar" id="topbar">
+        <div class="topbar__lead" id="topbarLead"></div>
+        <div class="topbar__title" id="topbarTitle" aria-hidden="true"></div>
+        <div class="topbar__trail" id="topbarTrail"></div>
+      </header>
+
+      <main class="view" id="view" tabindex="-1"></main>
+    </div>
+
+    <!-- Mobile tab bar -->
+    <nav class="tabbar" id="tabbar" aria-label="Primary"></nav>
+  </div>
+
+  <div class="toast-region" id="toastRegion" aria-live="polite" aria-atomic="false"></div>
+  <div class="sr-only" id="routeAnnouncer" aria-live="assertive" aria-atomic="true"></div>
+  <div id="overlayRoot"></div>
+
+  <noscript>
+    <div class="noscript">Clearline requires JavaScript to run this demonstration.</div>
+  </noscript>
+
+  <!-- Core -->
+  <script src="js/core/utils.js" defer></script>
+  <script src="js/core/icons.js" defer></script>
+  <script src="js/core/crypto.js" defer></script>
+  <script src="js/data/catalog.js" defer></script>
+  <script src="js/data/seed.js" defer></script>
+  <script src="js/core/store.js" defer></script>
+  <script src="js/core/router.js" defer></script>
+  <!-- UI kit -->
+  <script src="js/ui/toast.js" defer></script>
+  <script src="js/ui/overlay.js" defer></script>
+  <script src="js/ui/charts.js" defer></script>
+  <script src="js/ui/components.js" defer></script>
+  <!-- Views -->
+  <script src="js/views/employee/home.js" defer></script>
+  <script src="js/views/employee/submit.js" defer></script>
+  <script src="js/views/employee/track.js" defer></script>
+  <script src="js/views/employee/how.js" defer></script>
+  <script src="js/views/admin/login.js" defer></script>
+  <script src="js/views/admin/dashboard.js" defer></script>
+  <script src="js/views/admin/reports.js" defer></script>
+  <script src="js/views/admin/case.js" defer></script>
+  <script src="js/views/admin/analytics.js" defer></script>
+  <script src="js/views/admin/settings.js" defer></script>
+  <!-- Shell -->
+  <script src="js/app.js" defer></script>
+</body>
+</html>
