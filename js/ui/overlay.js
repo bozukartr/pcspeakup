@@ -215,5 +215,5 @@
     return entry;
   }
 
-  window.SU.overlay = { sheet, confirm, menu, closeAll: () => [...stack].reverse().forEach((s) => s.close()) };
+  window.SU.overlay = { sheet, confirm, menu, mount, closeAll: () => [...stack].reverse().forEach((s) => s.close()) };
 })();

@@ -11,11 +11,11 @@
   SU.views = SU.views || {};
 
   const STEPS = [
-    { id: 'category', title: 'What is this about?', sub: 'Choose the category that fits best. Our team can adjust it later if needed.' },
-    { id: 'details', title: 'Tell us what happened', sub: 'Share as much as you’re comfortable with. Specific facts help us act faster.' },
-    { id: 'evidence', title: 'Add supporting files', sub: 'Optional. Screenshots, documents or photos can help the review.' },
-    { id: 'identity', title: 'How should we know you?', sub: 'Staying anonymous is completely fine. You can still receive updates.' },
-    { id: 'review', title: 'Review and submit', sub: 'Check everything looks right before you send it.' },
+    { id: 'category', title: 'What is this about?', sub: '' },
+    { id: 'details', title: 'What happened?', sub: 'Facts like who, when and where help most.' },
+    { id: 'evidence', title: 'Add files', sub: 'Optional' },
+    { id: 'identity', title: 'Your identity', sub: 'Anonymous reporters still get updates.' },
+    { id: 'review', title: 'Review', sub: '' },
   ];
 
   const LIMITS = { subjectMin: 6, subjectMax: 120, descMin: 30, descMax: 5000, files: 5, fileSize: 10 * 1024 * 1024 };
@@ -161,14 +161,14 @@
           <div class="field">
             <fieldset>
               <legend class="sr-only">Category</legend>
-              <div class="choice-grid" role="radiogroup" aria-label="Category">
+              <div class="choice-grid choice-grid--tiles" role="radiogroup" aria-label="Category">
                 ${catalog.CATEGORIES.map((c, i) => html`
-                  <label class="choice">
+                  <label class="choice choice--tile" title="${c.desc}">
                     <input type="radio" name="category" value="${c.id}" ${state.category === c.id ? 'checked' : ''} ${i === 0 ? html`data-validate="category" aria-describedby="cat-err"` : ''}>
                     <span class="choice__card">
                       ${ui.categoryTile(c.id)}
-                      <span class="grow"><span class="choice__title">${c.label}</span><span class="choice__desc">${c.desc}</span></span>
-                      <span class="choice__check">${SU.icon('check')}</span>
+                      <span class="choice__title">${c.label}</span>
+                      <span class="sr-only">${c.desc}</span>
                     </span>
                   </label>`)}
               </div>
@@ -178,36 +178,38 @@
       }
 
       function stepDetails() {
+        const hasContext = !!(state.occurredOn || state.location || state.involved);
         return html`
           <div class="card card--pad">
             <div class="field">
               <label class="field__label" for="f-subject">Subject <span class="field__count" data-count="subject">${state.subject.length}/${LIMITS.subjectMax}</span></label>
-              <input class="input" id="f-subject" name="subject" maxlength="${LIMITS.subjectMax}" autocomplete="off" placeholder="e.g. Repeated inappropriate comments in team meetings" value="${state.subject}" data-validate="subject" aria-describedby="subject-err" required>
+              <input class="input" id="f-subject" name="subject" maxlength="${LIMITS.subjectMax}" autocomplete="off" placeholder="A short summary" value="${state.subject}" data-validate="subject" aria-describedby="subject-err" required>
               ${ui.fieldError('subject')}
             </div>
             <div class="field">
-              <label class="field__label" for="f-desc">What happened? <span class="field__count" data-count="description">${state.description.length}/${LIMITS.descMax}</span></label>
-              <textarea class="textarea" id="f-desc" name="description" maxlength="${LIMITS.descMax}" placeholder="Describe the situation: what happened, how often, and any impact it had. Avoid including your own name if you want to stay anonymous." data-validate="description" aria-describedby="desc-hint description-err" required>${state.description}</textarea>
-              <p class="field__hint" id="desc-hint">Tip: who, what, when and where are the most useful details.</p>
+              <label class="field__label" for="f-desc">Description <span class="field__count" data-count="description">${state.description.length}/${LIMITS.descMax}</span></label>
+              <textarea class="textarea" id="f-desc" name="description" maxlength="${LIMITS.descMax}" placeholder="What happened, how often, and the impact" data-validate="description" aria-describedby="description-err" required>${state.description}</textarea>
               ${ui.fieldError('description')}
             </div>
           </div>
 
-          <div class="card card--pad" style="margin-top:12px">
-            <div class="t-overline" style="margin-bottom:14px">Optional context</div>
-            <div class="field">
-              <label class="field__label" for="f-when">When did it happen? <span class="field__optional">Optional</span></label>
-              <input class="input" id="f-when" name="occurredOn" autocomplete="off" placeholder="e.g. Last Tuesday, or ongoing since March" value="${state.occurredOn}">
+          <details class="card disclosure" ${hasContext ? 'open' : ''}>
+            <summary>${SU.icon('plus')}<span>When, where, who</span><span class="field__optional">Optional</span></summary>
+            <div class="disclosure__body">
+              <div class="field">
+                <label class="field__label" for="f-when">When</label>
+                <input class="input" id="f-when" name="occurredOn" autocomplete="off" placeholder="e.g. Last Tuesday" value="${state.occurredOn}">
+              </div>
+              <div class="field">
+                <label class="field__label" for="f-where">Where</label>
+                <input class="input" id="f-where" name="location" autocomplete="off" placeholder="e.g. 3rd floor, team chat" value="${state.location}">
+              </div>
+              <div class="field">
+                <label class="field__label" for="f-who">Who</label>
+                <input class="input" id="f-who" name="involved" autocomplete="off" placeholder="People involved or witnesses" value="${state.involved}">
+              </div>
             </div>
-            <div class="field">
-              <label class="field__label" for="f-where">Where? <span class="field__optional">Optional</span></label>
-              <input class="input" id="f-where" name="location" autocomplete="off" placeholder="e.g. London office, 3rd floor, or a team channel" value="${state.location}">
-            </div>
-            <div class="field">
-              <label class="field__label" for="f-who">Who was involved? <span class="field__optional">Optional</span></label>
-              <input class="input" id="f-who" name="involved" autocomplete="off" placeholder="Names or roles of the people involved or witnesses" value="${state.involved}">
-            </div>
-          </div>`;
+          </details>`;
       }
 
       function stepEvidence() {
@@ -215,14 +217,11 @@
           <label class="dropzone" data-drop>
             <input type="file" multiple accept="${ACCEPT}" data-file aria-describedby="drop-hint">
             <span class="tile-icon tile-icon--lg tile-icon--navy">${SU.icon('upload')}</span>
-            <span class="dropzone__title">Choose files or drag them here</span>
-            <span class="dropzone__hint" id="drop-hint">Up to ${LIMITS.files} files · 10 MB each · PDF, images, Office documents, audio, video</span>
+            <span class="dropzone__title">Add files</span>
+            <span class="dropzone__hint" id="drop-hint">Up to ${LIMITS.files} · 10 MB each</span>
           </label>
           <div data-files style="margin-top:12px">${fileRows()}</div>
-          <div class="callout callout--warning" style="margin-top:16px">
-            ${SU.icon('eyeOff')}
-            <div><strong>Protect your anonymity.</strong> Files can contain hidden details such as author names, device info or location. Remove anything that could identify you, or skip this step.</div>
-          </div>`;
+          <p class="hint-line">${SU.icon('eyeOff')}Files may contain hidden details that identify you.</p>`;
       }
 
       function fileRows() {
@@ -243,8 +242,8 @@
                 <input type="radio" name="identity" value="anon" ${state.anonymous ? 'checked' : ''}>
                 <span class="choice__card">
                   <span class="tile-icon tile-icon--green">${SU.icon('incognito')}</span>
-                  <span class="grow"><span class="choice__title">Stay anonymous <span class="pill pill--resolved" style="margin-left:6px;height:20px;font-size:11px">Recommended</span></span>
-                  <span class="choice__desc">We won’t know who you are. You’ll get a private access code to follow up.</span></span>
+                  <span class="grow"><span class="choice__title">Stay anonymous</span>
+                  <span class="choice__desc">Recommended · follow up with a private code</span></span>
                   <span class="choice__check">${SU.icon('check')}</span>
                 </span>
               </label>
@@ -253,7 +252,7 @@
                 <span class="choice__card">
                   <span class="tile-icon tile-icon--navy">${SU.icon('user')}</span>
                   <span class="grow"><span class="choice__title">Share my identity</span>
-                  <span class="choice__desc">Only the case team will see your details. This can make follow-up easier.</span></span>
+                  <span class="choice__desc">Visible to the case team only</span></span>
                   <span class="choice__check">${SU.icon('check')}</span>
                 </span>
               </label>
@@ -272,11 +271,7 @@
               ${ui.fieldError('email')}
             </div>
           </div>
-
-          <div class="callout" style="margin-top:16px">
-            ${SU.icon('shieldCheck')}
-            <div>Whichever you choose, our policy strictly prohibits retaliation against anyone who reports a concern in good faith.</div>
-          </div>`;
+`;
       }
 
       function stepReview() {
@@ -302,7 +297,7 @@
           <div class="field" style="margin-top:16px">
             <label class="confirm-row">
               <input type="checkbox" name="confirm" ${state.confirm ? 'checked' : ''} data-validate="confirm" aria-describedby="confirm-err">
-              <span>I confirm this report is made in good faith and is accurate to the best of my knowledge.</span>
+              <span>I’m reporting in good faith and the details are accurate to my knowledge.</span>
             </label>
             ${ui.fieldError('confirm')}
           </div>`;
@@ -317,11 +312,11 @@
                 <circle cx="26" cy="26" r="24" stroke-width="2.5" opacity=".35"/><path d="m16 27 7 7 13-15"/>
               </svg>
             </div>
-            <h1 class="t-title-2" style="margin-top:20px;text-align:center" data-large-title tabindex="-1" data-success-title>Report submitted</h1>
-            <p class="text-2" style="text-align:center;margin:8px auto 0;max-width:42ch">Thank you for speaking up. Save the details below — they are the only way to check status and read replies.</p>
+            <h1 class="t-title-2" style="margin-top:16px;text-align:center" data-large-title tabindex="-1" data-success-title>Report submitted</h1>
+            <p class="text-2 t-callout" style="text-align:center;margin:4px auto 0">Save these details to track your report.</p>
           </div>
 
-          <div class="card card--pad" style="margin-top:24px">
+          <div class="card card--pad" style="margin-top:20px">
             <div class="stack gap-3">
               <div class="code-box">
                 <div style="min-width:0"><div class="code-box__label">Tracking reference</div><div class="code-box__value">${reference}</div></div>
@@ -332,20 +327,8 @@
                 <button class="icon-btn" type="button" data-copy="${accessCode}" data-copy-label="Access code" aria-label="Copy access code">${SU.icon('copy')}</button>
               </div>
             </div>
-            <div class="callout callout--warning" style="margin-top:16px">
-              ${SU.icon('key')}
-              <div><strong>We can’t recover your access code.</strong> It isn’t stored in readable form, so keep it somewhere private — not on a shared or work device if you want to stay anonymous.</div>
-            </div>
-            <button class="btn btn--secondary btn--block" type="button" style="margin-top:16px" data-download>${SU.icon('download')}Save as text file</button>
-          </div>
-
-          <div class="card card--pad" style="margin-top:12px">
-            <div class="card-title">What happens next</div>
-            <ol class="next-steps">
-              <li><span>1</span><div><b>Within 2 business days</b><p>A reviewer acknowledges your report and may ask questions.</p></div></li>
-              <li><span>2</span><div><b>Review and investigation</b><p>The case team assesses the facts confidentially.</p></div></li>
-              <li><span>3</span><div><b>Outcome</b><p>You’ll see status updates and messages when you track your report.</p></div></li>
-            </ol>
+            <p class="hint-line hint-line--warn">${SU.icon('key')}Codes can’t be recovered — store them privately.</p>
+            <button class="btn btn--secondary btn--block" type="button" style="margin-top:12px" data-download>${SU.icon('download')}Save as file</button>
           </div>
 
           <div class="stack gap-2" style="margin-top:20px">
@@ -388,7 +371,7 @@
         setHTML(body, html`
           <header class="flow__head">
             <h1 class="t-title-2" data-large-title tabindex="-1">${s.title}</h1>
-            <p class="text-2" style="margin-top:6px">${s.sub}</p>
+            ${s.sub ? html`<p class="text-2 t-callout" style="margin-top:2px">${s.sub}</p>` : ''}
           </header>
           ${content}`);
         body.className = `flow__body ${SU.util.prefersReducedMotion() ? '' : `enter-${direction}`}`;

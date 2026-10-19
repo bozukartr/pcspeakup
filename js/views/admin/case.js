@@ -201,7 +201,7 @@
             ${r.identity.anonymous ? ui.anonAvatar() : ui.avatar(r.identity.name)}
             <div class="grow" style="min-width:0">
               <div class="t-headline" style="font-size:15px">${r.identity.anonymous ? 'Anonymous reporter' : r.identity.name}</div>
-              <div class="t-caption truncate">${r.identity.anonymous ? 'Identity protected · reachable via messages' : r.identity.email || 'No email provided'}</div>
+              <div class="t-caption truncate">${r.identity.anonymous ? 'Reachable via messages' : r.identity.email || 'No email'}</div>
             </div>
           </div>
           <div class="kv" style="margin-top:10px">
@@ -214,7 +214,7 @@
         const tabs = [
           ['messages', 'Messages', r.messages.length],
           ['details', 'Details', null],
-          ['notes', 'Internal notes', r.notes.length],
+          ['notes', 'Notes', r.notes.length],
           ['activity', 'Activity', null],
         ];
         const el = page.querySelector('[data-tabs]');
@@ -256,8 +256,8 @@
         if (!r.messages.length) {
           return html`<div class="thread-empty">
             <span class="tile-icon tile-icon--lg">${SU.icon('message')}</span>
-            <p class="t-headline" style="margin-top:12px">Start the conversation</p>
-            <p class="t-callout text-2" style="margin-top:4px;max-width:36ch">Messages are delivered to the reporter’s secure inbox. They’ll see them next time they track their report.</p>
+            <p class="t-headline" style="margin-top:10px">No messages yet</p>
+            <p class="t-caption" style="margin-top:2px">Reporters see replies when they next check in.</p>
           </div>`;
         }
         let last = '';
@@ -279,11 +279,10 @@
               ${TEMPLATES.map(([label], i) => html`<button class="chip" type="button" data-template="${i}">${SU.icon('reply')}${label}</button>`)}
             </div>
             <label for="c-msg" class="sr-only">Message to reporter</label>
-            <div class="composer" style="margin-top:10px">
+            <div class="composer" style="margin-top:8px">
               <textarea id="c-msg" rows="1" maxlength="4000" placeholder="Message the reporter…" data-input></textarea>
               <button class="composer__send" type="submit" aria-label="Send message" disabled data-send>${SU.icon('send')}</button>
             </div>
-            <p class="t-caption" style="margin:8px 4px 0">${SU.icon('eye', 'style="width:12px;height:12px;display:inline;vertical-align:-1px"')} Visible to the reporter. Use internal notes for private comments.</p>
           </form>`;
       }
 
@@ -316,6 +315,7 @@
             input.value = '';
             setHTML(scroller, thread());
             scroller.scrollTo({ top: scroller.scrollHeight, behavior: 'smooth' });
+            if (!SU.util.isDesktop()) window.scrollTo({ top: document.documentElement.scrollHeight, behavior: 'smooth' });
             renderTabs();
             haptic(8);
             SU.toast.success('Message sent to reporter');
@@ -350,7 +350,7 @@
               ? html`<div style="margin-top:10px">${r.attachments.map((a) => html`
                 <div class="file-row">
                   <span class="tile-icon">${SU.icon(a.type.startsWith('image/') ? 'image' : 'file')}</span>
-                  <div class="grow" style="min-width:0"><div class="file-row__name truncate">${a.name}</div><div class="file-row__meta">${formatBytes(a.size)} · Metadata stripped · Virus scan passed</div></div>
+                  <div class="grow" style="min-width:0"><div class="file-row__name truncate">${a.name}</div><div class="file-row__meta">${formatBytes(a.size)}</div></div>
                   <button class="icon-btn icon-btn--sm" type="button" aria-label="Download ${a.name}" data-dl>${SU.icon('download')}</button>
                 </div>`)}</div>`
               : html`<p class="t-callout text-3" style="margin-top:8px">No files were attached.</p>`}
@@ -360,12 +360,12 @@
       /* ---------- Internal notes ---------- */
       function notesTab() {
         return html`
-          <div class="callout callout--warning" style="margin-bottom:16px">${SU.icon('lock')}<div><strong>Private to the case team.</strong> Internal notes are never shared with the reporter.</div></div>
+          <p class="hint-line hint-line--warn" style="margin:0 0 10px">${SU.icon('lock')}Team only — never shown to the reporter</p>
           <form data-note-form>
             <label for="n-body" class="sr-only">New internal note</label>
-            <textarea class="textarea textarea--sm" id="n-body" maxlength="4000" placeholder="Add an internal note, finding or next step…" data-note-input></textarea>
+            <textarea class="textarea textarea--sm" id="n-body" maxlength="4000" placeholder="Add a note…" data-note-input></textarea>
             <div class="row between" style="margin-top:10px">
-              <span class="t-caption">Notes are time-stamped and audit-logged.</span>
+              <span></span>
               <button class="btn btn--primary btn--sm" type="submit" disabled data-note-save>Add note</button>
             </div>
           </form>
@@ -443,7 +443,7 @@
                 </div>
               </li>`)}
           </ol>
-          <p class="t-caption" style="margin-top:16px">${SU.icon('shield', 'style="width:12px;height:12px;display:inline;vertical-align:-1px"')} In production, the audit trail is append-only and tamper-evident.</p>`;
+`;
       }
 
       // Reflect new reporter messages arriving from another tab.

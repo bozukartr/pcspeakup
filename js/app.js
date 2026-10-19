@@ -112,7 +112,10 @@
     const isAdmin = area === 'admin';
 
     setHTML(el.sidebarCtx, html`
-      <div class="t-overline" style="margin-bottom:6px">${isAdmin ? 'Ethics & Compliance' : 'Speak Up Safely'}</div>`);
+      <button class="search-trigger" type="button" data-palette title="Search (⌘K)">
+        ${SU.icon('search')}<span>${isAdmin ? 'Search' : 'Go to…'}</span><kbd>⌘K</kbd>
+      </button>`);
+    el.sidebarCtx.querySelector('[data-palette]').addEventListener('click', () => SU.palette.open());
 
     setHTML(el.sidebarNav, html`
       ${nav.items.map((it) => html`
@@ -120,12 +123,7 @@
           ${SU.icon(it.icon)}<span class="nav-item__label">${it.longLabel || it.label}</span>
           <span class="nav-item__badge nav-item__badge--alert" data-badge="${it.id}" hidden></span>
         </a>`)}
-      ${isAdmin ? '' : html`
-        <div class="nav-label t-overline">Your privacy</div>
-        <div class="card card--sunken nav-privacy" style="margin:0 4px;padding:14px;border-radius:14px">
-          <div class="row gap-2" style="font-weight:600;font-size:13px">${SU.icon('shieldCheck', 'style="width:16px;height:16px;color:var(--success)"')}Anonymous by default</div>
-          <p class="t-caption" style="margin-top:6px;color:var(--text-2)">We never ask for your name unless you choose to share it.</p>
-        </div>`}`);
+`);
 
     setHTML(el.tabbar, html`${nav.items.map((it) => html`
       <a class="tab" href="#${it.to}" data-nav="${it.id}">
@@ -133,7 +131,14 @@
         <span class="tab__pip" data-badge="${it.id}" hidden></span>
       </a>`)}`);
 
-    el.tabbar.querySelectorAll('.tab').forEach((t) => t.addEventListener('click', () => haptic(5)));
+    el.tabbar.querySelectorAll('.tab').forEach((t) => t.addEventListener('click', (e) => {
+      haptic(5);
+      // Native pattern: tapping the active tab scrolls back to the top.
+      if (t.getAttribute('aria-current') === 'page' && location.hash === t.getAttribute('href')) {
+        e.preventDefault();
+        window.scrollTo({ top: 0, behavior: SU.util.prefersReducedMotion() ? 'auto' : 'smooth' });
+      }
+    }));
     renderSidebarFoot();
     updateBadges();
   }
@@ -193,6 +198,8 @@
     refreshBadges: updateBadges,
   };
   SU.shell = shell;
+  shell.nav = () => NAV[renderedArea] || NAV.employee;
+  shell.area = () => renderedArea;
 
   /* ---------- Large title → compact title on scroll ---------- */
   function observeTitle(page) {
@@ -213,6 +220,8 @@
   function onRoute(match, prev, direction) {
     const view = match.view;
     const myToken = ++token;
+    if (prev) scrollMemory.set(prev.path, window.scrollY);
+    gestures.setRefresh(null);
     if (cleanup) { try { cleanup(); } catch (e) { console.error(e); } cleanup = null; }
     SU.overlay.closeAll();
 
@@ -227,6 +236,7 @@
     page.className = `page ${view.pageClass || ''} ${firstRoute || SU.util.prefersReducedMotion() ? '' : `enter-${direction}`}`;
     el.view.replaceChildren(page);
     window.scrollTo(0, 0);
+    const restoreY = direction === 'back' || (direction === 'fade' && view.depth === 0) ? scrollMemory.get(match.path) : 0;
     onScroll();
     shell.setTop({ title: view.title });
 
@@ -235,7 +245,8 @@
       query: match.query,
       shell,
       alive: () => myToken === token,
-      onMounted: () => observeTitle(page),
+      onMounted: () => { observeTitle(page); restoreScroll(restoreY, myToken); },
+      setRefresh: (fn) => gestures.setRefresh(fn),
     };
     try {
       const result = view.mount(page, ctx);
@@ -245,6 +256,7 @@
       setHTML(page, SU.ui.empty({ icon: 'alertCircle', title: 'Something went wrong', text: 'Please try again in a moment.' }));
     }
     observeTitle(page);
+    restoreScroll(restoreY, myToken);
 
     const docTitle = typeof view.title === 'string' && view.title ? `${view.title} · Clearline` : 'Clearline · Speak Up Safely';
     document.title = docTitle;
@@ -255,12 +267,32 @@
     firstRoute = false;
   }
 
+  /* ---------- Scroll memory (restored when returning to a screen) ---------- */
+  const scrollMemory = new Map();
+  function restoreScroll(y, myToken) {
+    if (!y) return;
+    let tries = 0;
+    const attempt = () => {
+      if (myToken !== token) return;
+      if (document.documentElement.scrollHeight - innerHeight >= y || tries++ > 20) window.scrollTo(0, y);
+      else requestAnimationFrame(attempt);
+    };
+    requestAnimationFrame(attempt);
+  }
+
+  const gestures = SU.gestures.init({ view: el.view, lead: el.lead });
+
   /* ---------- Keyboard shortcuts ---------- */
   function isTyping(e) {
     const t = e.target;
     return t.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(t.tagName);
   }
   document.addEventListener('keydown', (e) => {
+    if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+      e.preventDefault();
+      if (!document.body.classList.contains('is-locked')) SU.palette.open();
+      return;
+    }
     if (e.metaKey || e.ctrlKey || e.altKey || isTyping(e) || document.body.classList.contains('is-locked')) return;
     if (e.key === '/') {
       const search = document.querySelector('[data-search]');
@@ -274,6 +306,7 @@
 
   function showShortcuts() {
     const rows = [
+      ['⌘ / Ctrl + K', 'Command palette'],
       ['/', 'Focus search'],
       ['[', 'Collapse or expand sidebar'],
       ['?', 'Show keyboard shortcuts'],

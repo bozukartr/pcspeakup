@@ -26,10 +26,10 @@
           <div class="auth__brand">
             <span class="brand__mark" aria-hidden="true"></span>
           </div>
-          <h1 class="t-title-2" style="text-align:center;margin-top:18px" data-large-title>Case Management</h1>
-          <p class="text-2" style="text-align:center;margin-top:6px">Sign in to review and respond to reports.</p>
+          <h1 class="t-title-2" style="text-align:center;margin-top:14px" data-large-title>Case Management</h1>
+          <p class="text-2 t-callout" style="text-align:center;margin-top:2px">Authorized staff only</p>
 
-          <form class="card card--pad" style="margin-top:28px" novalidate data-form>
+          <form class="card card--pad" style="margin-top:20px" novalidate data-form>
             <div class="field">
               <label class="field__label" for="a-email">Work email</label>
               <input class="input" id="a-email" name="email" type="email" autocomplete="username" inputmode="email" value="${catalog.TEAM[0].email}" data-validate="email" aria-describedby="email-err" required>
@@ -41,11 +41,11 @@
               <p class="field__hint" id="pass-hint">Demo password: <span class="t-mono">demo</span></p>
               ${ui.fieldError('password')}
             </div>
-            <label class="row between" style="margin-top:18px;min-height:44px;cursor:pointer">
+            <label class="row between" style="margin-top:12px;min-height:44px;cursor:pointer">
               <span class="t-callout">Keep me signed in</span>
               <span class="switch"><input type="checkbox" name="remember" aria-label="Keep me signed in"><span class="switch__track"></span></span>
             </label>
-            <button class="btn btn--primary btn--lg btn--block" type="submit" style="margin-top:18px" data-submit>Sign In</button>
+            <button class="btn btn--primary btn--lg btn--block" type="submit" style="margin-top:10px" data-submit>Sign In</button>
           </form>
 
           <div style="margin-top:20px">
@@ -55,12 +55,7 @@
             </div>
           </div>
 
-          <div class="callout" style="margin-top:24px">
-            ${SU.icon('shield')}
-            <div>Production deployments use single sign-on with multi-factor authentication and role-based access. Every case view is audit-logged.</div>
-          </div>
-
-          <a class="btn btn--ghost btn--block" href="#/" style="margin-top:16px">${SU.icon('chevronLeft')}Back to employee portal</a>
+          <a class="btn btn--ghost btn--block" href="#/" style="margin-top:12px">${SU.icon('chevronLeft')}Back to employee portal</a>
         </div>`);
 
       const form = page.querySelector('[data-form]');
