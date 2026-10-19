@@ -1,0 +1,231 @@
+/* ==========================================================================
+   Design tokens — single source of truth for color, type, spacing, motion.
+   Light is the default; dark is a selected palette, not an automatic flip.
+   ========================================================================== */
+
+:root {
+  color-scheme: light;
+
+  /* Typeface */
+  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-mono: ui-monospace, "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
+
+  /* Type scale */
+  --fs-2xs: 11px;
+  --fs-xs: 12px;
+  --fs-sm: 13px;
+  --fs-base: 15px;
+  --fs-md: 16px;
+  --fs-lg: 18px;
+  --fs-xl: 21px;
+  --fs-2xl: 26px;
+  --fs-3xl: 32px;
+  --fs-hero: 40px;
+
+  --lh-tight: 1.15;
+  --lh-snug: 1.3;
+  --lh-normal: 1.5;
+
+  --tracking-tight: -0.022em;
+  --tracking-snug: -0.012em;
+  --tracking-caps: 0.06em;
+
+  /* Spacing (4pt grid) */
+  --sp-1: 4px;
+  --sp-2: 8px;
+  --sp-3: 12px;
+  --sp-4: 16px;
+  --sp-5: 20px;
+  --sp-6: 24px;
+  --sp-7: 32px;
+  --sp-8: 40px;
+  --sp-9: 56px;
+  --sp-10: 72px;
+
+  --gutter: 16px;
+  --content-max: 1120px;
+  --reading-max: 680px;
+
+  /* Radii */
+  --r-xs: 6px;
+  --r-sm: 10px;
+  --r-md: 14px;
+  --r-lg: 18px;
+  --r-xl: 24px;
+  --r-pill: 999px;
+
+  /* Layout metrics */
+  --sidebar-w: 256px;
+  --sidebar-w-collapsed: 76px;
+  --topbar-h: 56px;
+  --tabbar-h: 58px;
+  --tap: 44px;
+
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-left: env(safe-area-inset-left, 0px);
+  --safe-right: env(safe-area-inset-right, 0px);
+
+  /* Motion */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-spring: cubic-bezier(0.32, 0.72, 0, 1);
+  --dur-1: 120ms;
+  --dur-2: 200ms;
+  --dur-3: 320ms;
+  --dur-4: 460ms;
+
+  /* ---- Color: light ---- */
+  --bg: #F6F6F4;
+  --bg-elevated: #FFFFFF;
+  --surface: #FFFFFF;
+  --surface-2: #F2F2EF;
+  --surface-3: #E9E9E5;
+  --surface-sunken: #EFEFEC;
+  --overlay: rgba(15, 18, 26, 0.32);
+  --glass: rgba(246, 246, 244, 0.78);
+
+  --border: rgba(17, 22, 34, 0.08);
+  --border-strong: rgba(17, 22, 34, 0.14);
+  --divider: rgba(17, 22, 34, 0.06);
+
+  --text: #15171C;
+  --text-2: #565C68;
+  --text-3: #8A8F99;
+  --text-inverse: #FFFFFF;
+
+  /* Brand: deep navy */
+  --navy-900: #0E1F3D;
+  --navy-800: #14294F;
+  --navy-700: #1B3564;
+  --navy-600: #24447D;
+  --navy-100: #E6EBF4;
+  --navy-50: #F1F4F9;
+
+  --primary: #14294F;
+  --primary-hover: #1B3564;
+  --primary-pressed: #0E1F3D;
+  --on-primary: #FFFFFF;
+  --primary-soft: #E8ECF4;
+  --primary-soft-text: #1B3564;
+
+  --accent: #2F6BDF;
+  --accent-soft: rgba(47, 107, 223, 0.10);
+  --focus: rgba(47, 107, 223, 0.45);
+
+  --success: #1D7F52;
+  --success-soft: rgba(29, 127, 82, 0.10);
+  --warning: #A86400;
+  --warning-soft: rgba(214, 140, 18, 0.12);
+  --danger: #C8382F;
+  --danger-soft: rgba(200, 56, 47, 0.09);
+  --info: #2F6BDF;
+  --info-soft: rgba(47, 107, 223, 0.09);
+
+  /* Report statuses */
+  --st-received: #5E6B82;
+  --st-received-soft: rgba(94, 107, 130, 0.12);
+  --st-review: #A86400;
+  --st-review-soft: rgba(214, 140, 18, 0.13);
+  --st-progress: #2F6BDF;
+  --st-progress-soft: rgba(47, 107, 223, 0.11);
+  --st-resolved: #1D7F52;
+  --st-resolved-soft: rgba(29, 127, 82, 0.11);
+
+  /* Priorities */
+  --pr-low: #6B7280;
+  --pr-medium: #2F6BDF;
+  --pr-high: #C26A00;
+  --pr-critical: #C8382F;
+
+  /* Charts (validated categorical slots 1 & 3, plus chrome) */
+  --chart-1: #2a78d6;
+  --chart-2: #1baf7a;
+  --chart-grid: #E4E3DD;
+  --chart-axis: #C9C8C0;
+  --chart-muted: #8A8F99;
+
+  /* Elevation */
+  --shadow-xs: 0 1px 1px rgba(17, 22, 34, 0.04);
+  --shadow-sm: 0 1px 2px rgba(17, 22, 34, 0.05), 0 1px 1px rgba(17, 22, 34, 0.03);
+  --shadow-md: 0 4px 14px -4px rgba(17, 22, 34, 0.10), 0 2px 4px -2px rgba(17, 22, 34, 0.05);
+  --shadow-lg: 0 18px 40px -12px rgba(17, 22, 34, 0.20), 0 4px 10px -4px rgba(17, 22, 34, 0.08);
+  --shadow-sheet: 0 -8px 40px -10px rgba(17, 22, 34, 0.25);
+  --ring: 0 0 0 3px var(--focus);
+}
+
+/* ---- Color: dark (selected steps) ---- */
+:root[data-theme="dark"] {
+  color-scheme: dark;
+
+  --bg: #0D0F13;
+  --bg-elevated: #15181E;
+  --surface: #15181E;
+  --surface-2: #1C2027;
+  --surface-3: #252A33;
+  --surface-sunken: #111318;
+  --overlay: rgba(0, 0, 0, 0.55);
+  --glass: rgba(13, 15, 19, 0.74);
+
+  --border: rgba(255, 255, 255, 0.07);
+  --border-strong: rgba(255, 255, 255, 0.13);
+  --divider: rgba(255, 255, 255, 0.05);
+
+  --text: #ECEEF2;
+  --text-2: #A5ABB6;
+  --text-3: #737A87;
+  --text-inverse: #0D0F13;
+
+  --primary: #E9EDF5;
+  --primary-hover: #FFFFFF;
+  --primary-pressed: #D3DAE7;
+  --on-primary: #0E1F3D;
+  --primary-soft: rgba(141, 170, 230, 0.14);
+  --primary-soft-text: #B8C9EE;
+
+  --accent: #6E9BF2;
+  --accent-soft: rgba(110, 155, 242, 0.14);
+  --focus: rgba(110, 155, 242, 0.5);
+
+  --success: #4CC28A;
+  --success-soft: rgba(76, 194, 138, 0.13);
+  --warning: #E9A93B;
+  --warning-soft: rgba(233, 169, 59, 0.14);
+  --danger: #F07068;
+  --danger-soft: rgba(240, 112, 104, 0.13);
+  --info: #6E9BF2;
+  --info-soft: rgba(110, 155, 242, 0.13);
+
+  --st-received: #9AA6BB;
+  --st-received-soft: rgba(154, 166, 187, 0.14);
+  --st-review: #E9A93B;
+  --st-review-soft: rgba(233, 169, 59, 0.14);
+  --st-progress: #6E9BF2;
+  --st-progress-soft: rgba(110, 155, 242, 0.15);
+  --st-resolved: #4CC28A;
+  --st-resolved-soft: rgba(76, 194, 138, 0.14);
+
+  --pr-low: #8F96A3;
+  --pr-medium: #6E9BF2;
+  --pr-high: #EB9A45;
+  --pr-critical: #F07068;
+
+  --chart-1: #3987e5;
+  --chart-2: #199e70;
+  --chart-grid: #262A31;
+  --chart-axis: #3A3F48;
+  --chart-muted: #7D838F;
+
+  --shadow-xs: 0 1px 1px rgba(0, 0, 0, 0.3);
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 6px 18px -6px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(255, 255, 255, 0.03);
+  --shadow-lg: 0 22px 48px -12px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 255, 255, 0.04);
+  --shadow-sheet: 0 -10px 40px -10px rgba(0, 0, 0, 0.7);
+}
+
+@media (min-width: 768px) {
+  :root { --gutter: 28px; }
+}
+@media (min-width: 1200px) {
+  :root { --gutter: 40px; }
+}
